@@ -1,0 +1,74 @@
+<div class="col-md-3" style="width: 400px;">
+  <div class="card">
+    <div class="card-header">
+      <div>
+        <div class="row align-items-center">
+          <div class="col-auto">
+            <img src="/images/uploads/{{user.profile}}" class="avatar" alt="" name="profile-pic" id="profile-pic">
+          </div>
+          <div class="col">
+            <div class="card-title">{{title}}</div>
+            <div class="card-subtitle">
+             
+              <span>Posted By {{user.firstname}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <div class="dropdown">
+          <a href="#" class="btn-action dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false"><!-- Download SVG icon from http://tabler-icons.io/i/dots-vertical -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+              <path d="M12 19m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+              <path d="M12 5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+            </svg>
+          </a>
+          <div class="dropdown-menu dropdown-menu-end">
+            {{#compare @root.userDetail._id "!=" user._id}}
+            
+            <a class="dropdown-item save-post"  data-saved="{{saved}}" data-id={{"_id"}}>
+               {{#if saved}}Remove{{else}} Save {{/if}}
+            </a>
+
+            {{/compare}}
+
+            {{#compare @root.userDetail._id "==" user._id}}
+            <a class="dropdown-item edit-post" id="edit-btn" data-id={{"_id"}}>Edit Post</a>
+
+            <a class="dropdown-item text-danger archive-post" data-archived="{{isArchived}}" data-id={{"_id"}}>
+              {{#if isArchived}}Remove From Archieve{{else}} Archive {{/if}}
+            </a>
+            {{/compare}}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col md-3">
+          <div class="">
+            <img src="/images/uploads/{{image}}" alt="" srcset="">
+            <div class="card-footer">
+              <div>
+                {{description}}
+              </div>
+              <b>
+                <div style="color: rgb(10, 10, 196);">{{formatDate createdAt 'MMMM Do YYYY, h:mm a'}}</div>
+              </b>
+
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
