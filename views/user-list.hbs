@@ -1,0 +1,42 @@
+{{> user-header}}
+{{!-- {{ usersList[0]}} --}}
+<div class="container">
+    <div class="row">
+        {{#each usersList}}
+    
+        <div class="col-3">
+            <div class="card  mt-4">
+                <div class="card-body p-4 text-center">
+                    <img src="/images/uploads/{{profile}}" class="users-img" alt="" name="profile-pic" id="profile-pic">
+                    <h3 class="m-0 mb-1">{{firstname}} {{lastname}}</h3>
+                    <div class="mt-3">
+                        <span>{{email}}</span>
+
+                    </div>
+                    <div class="mt-2"><b><span>
+                            totalPosts
+                        </span></b>
+                        <span>
+
+                            {{totalPosts}}
+                        </span>
+                    </div>
+                     <div class="mt-2"><b><span>
+                            total Saved Posts
+                        </span></b>
+                        <span>
+
+                            {{totalSaved}}
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        {{/each}}
+    </div>
+</div>
+
+
+<script src="/javascripts/user-list.js"></script>

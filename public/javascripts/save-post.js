@@ -4,7 +4,6 @@ $(document).ready(function () {
         const post = $(this).data('id');
         const saved= $(this).data('saved');
 
-        console.log("fgnbgvcxnbvcvv" , typeof saved);
         $.ajax({
             url: "/post/save",
             type: "POST",
@@ -14,11 +13,7 @@ $(document).ready(function () {
 
             },
             success: function (response) {
-                console.log(response);
-                // location.reload(); 
-
-                
-
+                location.reload(); 
             },
             error: function (err) {
                 console.log(err);

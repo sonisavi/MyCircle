@@ -23184,3 +23184,7 @@ img {
 label.error {
   color: red;
 }
+.users-img{
+  width:50%;
+  height:100px;
+}

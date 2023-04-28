@@ -22,37 +22,16 @@ const upload = multer({
     storage: storage
 });
 
-// router.post("/:postId?", async (req, res) => {
-//     console.log("postId ==========> ", req.params.postId);
-//     upload(req, res, function (err) {
-//         if (err instanceof multer.MulterError) {
-//             console.log("**************");
-//             console.log(err.message);
-//             res.end()
-//             // A Multer error occurred when uploading.
-//         } else if (err) {
-//             console.log("-------------------")
-//             console.log(err);
-//             res.end()
-//             // An unknown error occurred when uploading.
-//         } else {
-//             console.log("body",req.body);
-//             console.log("hello");
-//             res.end()
-//         }
-//         // Everything went fine.
-//     })
-//     res.end()
-// });
+
 
 router.get("/", async (req, res) => {
-    const { archived, saved, mine, others, searchVal, sortBy,sortOrder } = req.query;
+    const { archived, saved, mine, others, searchVal, sortBy, sortOrder } = req.query;
     const loggedInUser = new ObjectId(req.user._id);
     let match = {
         isArchived: false
     };
     let sortObj = {
-      _id:-1
+        _id: -1
     }
 
     if (archived) {
@@ -64,32 +43,29 @@ router.get("/", async (req, res) => {
         const savedPosts = await SavedPostModel.find({ user: req.user._id }, { post: 1 }).lean();
         const savedPostIds = savedPosts.map(value => value.post);
         match._id = { $in: savedPostIds }
-        // console.log('savedPosts', savedPosts);
+// console.log(savedPosts);
+
+
     }
-    // console.log('other  ===> ', others, loggedInUser);
-    // console.log('mine  ===> ', mine, loggedInUser);
+
     if (mine) {
         match.postBy = loggedInUser;
-        // sortObj = {[sortBy]:parseInt(sortOrder)}
+
     }
     if (others) {
         match = { ...match, postBy: { $ne: loggedInUser } }
-        // match.postBy != loggedInUser;
-        // console.log(req.query);
+
     }
 
     if (searchVal) {
-        // console.log({...match , title :{$eq:searchVal}});
         match = { ...match, $or: [{ 'title': { $regex: searchVal } }, { 'description': { $regex: searchVal } }] }
     }
 
-    if(sortBy && sortOrder){
-        sortObj = {[sortBy]:parseInt(sortOrder)}
-        console.log("dfgdfggfdgt");
+    if (sortBy && sortOrder) {
+        sortObj = { [sortBy]: parseInt(sortOrder) }
+        console.log(sortObj);
     }
-    // console.log("===============");
-    // console.log(match);
-    // console.log("match", match)
+
 
     const posts = await PostModel.aggregate([
         { $match: match },
@@ -121,7 +97,7 @@ router.get("/", async (req, res) => {
                     {
                         $match: {
                             $expr: {
-                                $eq: ["$user", req.user._id],
+                                $eq: ["$user", new ObjectId(req.user._id)],
                                 $eq: ["$post", "$$postId"]
                             },
                         }
@@ -131,7 +107,7 @@ router.get("/", async (req, res) => {
                 as: "savedPost"
             }
         },
-        { $sort : sortObj },
+        { $sort: sortObj },
         {
             $project: {
                 _id: 1,
@@ -147,13 +123,13 @@ router.get("/", async (req, res) => {
             },
         }
     ]);
-    // console.log(req.user._id);
-    // console.log(posts)
 
     res.render("timeline", {
-        layout: "main", userDetail: req.user, posts: posts
+        layout: "main", userDetail: req.user, posts: posts, active: "post"
     })
 });
+
+
 
 
 
@@ -178,7 +154,7 @@ router.post("/", upload.single('post-img'), async (req, res) => {
 
 
 router.put("/archive/:postId", async (req, res) => {
-    // let postInfo = await PostModel.findById(req.params.postId);
+
     try {
         const isArchived = req.body.isArchived;
         let updatePost = await PostModel.updateOne({ _id: req.params.postId }, { $set: { isArchived: isArchived } });
@@ -243,17 +219,22 @@ router.put('/:postId', function (req, res) {
 router.post("/save", async (req, res) => {
 
     const { saved, post } = req.body;
-    console.log(saved);
+    console.log(typeof saved);
 
-    // const savePost= await PostModel.updateOne({_id:req.body.post},{$set:{isSaved:isSaved}});
-    const savedPost = await SavedPostModel.create({
-        user: req.user._id,
-        post: req.body.post,
+    if (saved == "true") {
+        const data = await SavedPostModel.deleteOne({
+            user: new ObjectId(req.user._id),
+            post: new ObjectId(post)
+        });
+    } else {
+         await SavedPostModel.create({
+            user: req.user._id,
+            post: req.body.post,
 
-    });
+        });
+    }
 
-
-    res.json(savedPost)
+    res.json({})
 })
 
 
@@ -261,3 +242,4 @@ router.post("/save", async (req, res) => {
 
 
 module.exports = router;
+
